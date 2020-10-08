@@ -117,6 +117,9 @@ systemctl enable smart-garden-api
 setup reverse proxy
 ------------------------
 ```bash
+sudo apt install apache2
+sudo a2enmod ssl
+sudo service apache2 restart 
 root@doc:/etc/apache2/sites-available# nano smart-garden-api.conf
 
 <VirtualHost *:80>
