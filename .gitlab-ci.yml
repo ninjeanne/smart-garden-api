@@ -1,0 +1,51 @@
+image: maven:3.5.0-jdk-8
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - .m2/
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+
+build:
+  stage: build
+  script:
+    - mvn install -DskipTests
+  artifacts:
+    expire_in: 2h
+    paths:
+      - target/*.jar
+
+deploy:
+  when: manual
+  stage: deploy
+  script:
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 0700 ~/.ssh
+    ## Add Known Hosts
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 0644 ~/.ssh/known_hosts
+    ## login
+    - scp target/smart-garden-api*.jar plumeria-ci@plumeria.jeanne.tech:stage/smart-garden-api.jar
+    - ssh plumeria-ci@plumeria.jeanne.tech '/usr/bin/sudo /bin/systemctl restart smart-garden-api'
+  only:
+    - master
+    - test-ci
