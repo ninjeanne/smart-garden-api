@@ -44,7 +44,7 @@ deploy:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 0644 ~/.ssh/known_hosts
     ## login
-    - scp target/smart-garden-api*.jar plumeria-ci@plumeria.jeanne.tech:stage/smart-garden-api.jar
+    - scp target/smart-garden-api*.jar plumeria-ci@plumeria.jeanne.tech:smart-garden-api.jar
     - ssh plumeria-ci@plumeria.jeanne.tech '/usr/bin/sudo /bin/systemctl restart smart-garden-api'
   only:
     - master
