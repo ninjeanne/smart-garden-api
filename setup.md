@@ -83,6 +83,14 @@ COMMAND   PID      USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
 java    22447 plumeria-app   16u  IPv6 2366285      0t0  TCP 127.0.0.1:8080 (LISTEN)
 ```
 
+setup /etc/hosts
+----------------------
+```
+root@plumeria:/usr/local/share/smart-garden-api# cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	plumeria.jeanne.tech plumeria
+```
+
 setup systemd service
 ---------------------------
 ```bash
@@ -97,7 +105,7 @@ User=plumeria-app
 ExecStart=/usr/bin/java -jar smart-garden-api.jar
 KillSignal=SIGINT
 SuccessExitStatus=130
-WorkingDirectory=/usr/local/share/plumeria
+WorkingDirectory=/usr/local/share/smart-garden-api
 
 [Install]
 WantedBy=multi-user.target
@@ -119,6 +127,9 @@ setup reverse proxy
 ```bash
 sudo apt install apache2
 sudo a2enmod ssl
+sudo a2enmod rewrite
+sudo a2enmod proxy
+sudo a2enmod proxy_http
 sudo service apache2 restart 
 root@doc:/etc/apache2/sites-available# nano smart-garden-api.conf
 
@@ -145,6 +156,7 @@ root@doc:/etc/apache2/sites-available# systemctl reload apache2
 SSL per Let's Encrypt einrichten und aktivieren
 -----------------------------------------------
 ```bash
+sudo apt-get install certbot python-certbot-apache
 root@doc:/etc/apache2/sites-available# certbot
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
 Plugins selected: Authenticator apache, Installer apache
