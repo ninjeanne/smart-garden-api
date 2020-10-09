@@ -28,13 +28,13 @@ public class PlantController {
         return plantRepository.getPlantDTOByName(plantDTO.getName());
     }
 
-    @GetMapping("/data")
-    public List<SensorDTO> getData(@RequestParam String name) {
+    @GetMapping("/{name}/sensor")
+    public List<SensorDTO> getData(@PathVariable String name) {
         return plantRepository.getPlantDTOByName(name).getData();
     }
 
-    @PostMapping("/data")
-    public PlantDTO saveData(@RequestParam String name, @RequestBody SensorDTO newData) {
+    @PostMapping("/{name}/sensor")
+    public PlantDTO saveData(@PathVariable String name, @RequestBody SensorDTO newData) {
         log.info("New data: {}", newData);
         PlantDTO plant = plantRepository.getPlantDTOByName(name);
         List<SensorDTO> oldData = plant.getData();
