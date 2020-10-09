@@ -17,8 +17,8 @@ public class PlantController {
     @Autowired
     private PlantRepository plantRepository;
 
-    @GetMapping
-    public PlantDTO getPlant(@RequestParam String name) {
+    @GetMapping("/{name}")
+    public PlantDTO getPlant(@PathVariable String name) {
         return plantRepository.getPlantDTOByName(name);
     }
 
