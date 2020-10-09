@@ -21,7 +21,6 @@ build:
       - target/*.jar
 
 deploy:
-  when: manual
   stage: deploy
   script:
     ##
