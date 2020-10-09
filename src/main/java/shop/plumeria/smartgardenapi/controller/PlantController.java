@@ -1,5 +1,6 @@
 package shop.plumeria.smartgardenapi.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import shop.plumeria.smartgardenapi.dto.PlantDTO;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/plant")
+@Slf4j
 public class PlantController {
 
     @Autowired
@@ -33,6 +35,7 @@ public class PlantController {
 
     @PostMapping("/data")
     public PlantDTO saveData(@RequestParam String name, @RequestBody SensorDTO newData) {
+        log.info("New data: {}", newData);
         PlantDTO plant = plantRepository.getPlantDTOByName(name);
         List<SensorDTO> oldData = plant.getData();
         oldData.add(newData);
