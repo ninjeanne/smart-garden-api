@@ -24,6 +24,7 @@ public class SensorController {
 
     @PostMapping
     public void savePlant(@RequestBody SensorDTO sensorDTO) {
+        log.info("New data: {}", sensorDTO);
         plantService.saveSensorData(sensorDTO);
     }
 
