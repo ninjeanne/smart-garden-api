@@ -44,14 +44,8 @@ public class PlantService {
     public boolean saveSensorData(String mac_address, SensorDTO sensorData) {
         influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
 
-        BatchPoints batchPoints = BatchPoints.database(dbname).retentionPolicy("defaultPolicy").build();
-        Date date;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").parse(sensorData.getDateAndTime());
-        } catch (ParseException e) {
-            return false;
-        }
-        Point point = Point.measurement(measurement).time(date.getTime(), TimeUnit.MILLISECONDS).addField("name", sensorData.getName())
+        BatchPoints batchPoints = BatchPoints.database(dbname).build();
+        Point point = Point.measurement(measurement).time(sensorData.getDateAndTime(), TimeUnit.MILLISECONDS).addField("name", sensorData.getName())
                 .addField("mac_address", mac_address).addField("battery", sensorData.getBattery())
                 .addField("conductivity", sensorData.getConductivity()).addField("light", sensorData.getLight()).addField("moisture", sensorData.getMoisture())
                 .addField("temperature", sensorData.getTemperature()).build();
@@ -63,11 +57,14 @@ public class PlantService {
     }
 
     public List<SensorDAO> getSensorData(String mac_address) {
+        influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
         influxDB.setDatabase(dbname);
-        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where mac_address = \"" + mac_address + "\""));
+        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where mac_address = \'" + mac_address + "\'"));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-        return resultMapper
+        List<SensorDAO> data = resultMapper
                 .toPOJO(queryResult, SensorDAO.class);
+        influxDB.close();
+        return data;
     }
 
 }

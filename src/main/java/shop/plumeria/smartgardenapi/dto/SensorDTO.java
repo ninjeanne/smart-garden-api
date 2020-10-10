@@ -13,7 +13,7 @@ public class SensorDTO {
 
     private String name;
     private String mac_address;
-    private String dateAndTime;
+    private long dateAndTime;
     private int light;
     private double temperature;
     private int moisture;
