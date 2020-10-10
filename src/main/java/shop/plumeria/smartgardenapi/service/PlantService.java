@@ -45,7 +45,7 @@ public class PlantService {
         influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
     }
 
-    public boolean saveSensorData(SensorDTO sensorData) {
+    public boolean saveSensorData(String mac, SensorDTO sensorData) {
         BatchPoints batchPoints = BatchPoints.database(dbname).retentionPolicy("defaultPolicy").build();
         Date date;
         try {
@@ -54,7 +54,7 @@ public class PlantService {
             return false;
         }
         Point point = Point.measurement(measurement).time(date.getTime(), TimeUnit.MILLISECONDS).addField("name", sensorData.getName())
-                .addField("macAddress", sensorData.getMacAddress()).addField("battery", sensorData.getBattery())
+                .addField("macAddress", mac).addField("battery", sensorData.getBattery())
                 .addField("conductivity", sensorData.getConductivity()).addField("light", sensorData.getLight()).addField("moisture", sensorData.getMoisture())
                 .addField("temperature", sensorData.getTemperature()).build();
         batchPoints.point(point);

@@ -22,10 +22,10 @@ public class SensorController {
         return plantService.getSensorData(mac);
     }
 
-    @PostMapping
-    public void savePlant(@RequestBody SensorDTO sensorDTO) {
+    @PostMapping("/{mac}")
+    public void savePlant(@PathVariable String mac, @RequestBody SensorDTO sensorDTO) {
         log.info("New data: {}", sensorDTO);
-        plantService.saveSensorData(sensorDTO);
+        plantService.saveSensorData(mac, sensorDTO);
     }
 
 }
