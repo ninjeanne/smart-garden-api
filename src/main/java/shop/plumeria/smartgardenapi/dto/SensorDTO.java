@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class SensorDTO {
 
     private String name;
-    private String macAddress;
+    private String mac_address;
     private String dateAndTime;
     private int light;
     private double temperature;

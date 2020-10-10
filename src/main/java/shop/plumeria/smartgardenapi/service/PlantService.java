@@ -63,7 +63,8 @@ public class PlantService {
     }
 
     public List<SensorDAO> getSensorData(String macAddress) {
-        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where macAddress = \"" + macAddress + "\""));
+        influxDB.setDatabase(dbname);
+        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where mac_address = \"" + macAddress + "\""));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         return resultMapper
                 .toPOJO(queryResult, SensorDAO.class);
