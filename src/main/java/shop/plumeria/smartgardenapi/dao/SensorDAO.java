@@ -20,8 +20,8 @@ public class SensorDAO {
     private Instant time;
     @Column(name = "name")
     private String name;
-    @Column(name = "macAddress")
-    private String macAddress;
+    @Column(name = "mac_address")
+    private String mac_address;
     @Column(name = "light")
     private int light;
     @Column(name = "temperature")
