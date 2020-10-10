@@ -1,5 +1,6 @@
 package shop.plumeria.smartgardenapi.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class PlantService {
 
     private InfluxDB influxDB;
@@ -39,13 +41,9 @@ public class PlantService {
     @Value("${influxDB.measurement}")
     private String measurement;
 
-
-    @PostConstruct
-    private void initialize() {
-        influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
-    }
-
     public boolean saveSensorData(String mac_address, SensorDTO sensorData) {
+        influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
+
         BatchPoints batchPoints = BatchPoints.database(dbname).retentionPolicy("defaultPolicy").build();
         Date date;
         try {
@@ -57,8 +55,10 @@ public class PlantService {
                 .addField("mac_address", mac_address).addField("battery", sensorData.getBattery())
                 .addField("conductivity", sensorData.getConductivity()).addField("light", sensorData.getLight()).addField("moisture", sensorData.getMoisture())
                 .addField("temperature", sensorData.getTemperature()).build();
+        log.info("Created Point {}", point);
         batchPoints.point(point);
         influxDB.write(batchPoints);
+        influxDB.close();
         return true;
     }
 
