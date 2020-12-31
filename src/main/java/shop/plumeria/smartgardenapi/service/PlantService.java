@@ -59,7 +59,7 @@ public class PlantService {
     public List<SensorDAO> getSensorData(String mac_address) {
         influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
         influxDB.setDatabase(dbname);
-        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where mac_address = \'" + mac_address + "\'"));
+        QueryResult queryResult = influxDB.query(new Query("Select * from " + measurement + " where mac_address = '" + mac_address + "'"));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         List<SensorDAO> data = resultMapper
                 .toPOJO(queryResult, SensorDAO.class);
@@ -67,4 +67,14 @@ public class PlantService {
         return data;
     }
 
+    public SensorDAO getLatestSensorData(String mac_address) {
+        influxDB = InfluxDBFactory.connect(databaseUrl, userName, password);
+        influxDB.setDatabase(dbname);
+        QueryResult queryResult = influxDB.query(new Query("SELECT * FROM "+ measurement +" where mac_address = '" + mac_address + "' GROUP BY * ORDER BY DESC LIMIT 1"));
+        InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+        List<SensorDAO> data = resultMapper
+                .toPOJO(queryResult, SensorDAO.class);
+        influxDB.close();
+        return data.get(0);
+    }
 }

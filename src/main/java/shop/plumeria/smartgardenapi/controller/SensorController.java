@@ -18,7 +18,12 @@ public class SensorController {
     private PlantService plantService;
 
     @GetMapping("/{mac}")
-    public List<SensorDAO> getDeviceData(@PathVariable String mac) {
+    public SensorDAO getNewestDeviceData(@PathVariable String mac) {
+        return plantService.getLatestSensorData(mac);
+    }
+
+    @GetMapping("/{mac}/all")
+    public List<SensorDAO> getAllDeviceData(@PathVariable String mac) {
         return plantService.getSensorData(mac);
     }
 
@@ -27,5 +32,4 @@ public class SensorController {
         log.info("New data: {}", sensorDTO);
         plantService.saveSensorData(mac, sensorDTO);
     }
-
 }
