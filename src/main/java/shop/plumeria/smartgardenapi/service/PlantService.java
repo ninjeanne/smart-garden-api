@@ -75,6 +75,9 @@ public class PlantService {
         List<SensorDAO> data = resultMapper
                 .toPOJO(queryResult, SensorDAO.class);
         influxDB.close();
+        if(data.isEmpty()){
+            return null;
+        }
         return data.get(0);
     }
 }
