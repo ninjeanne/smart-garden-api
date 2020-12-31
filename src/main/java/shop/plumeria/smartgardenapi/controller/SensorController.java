@@ -2,6 +2,8 @@ package shop.plumeria.smartgardenapi.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.plumeria.smartgardenapi.dao.SensorDAO;
 import shop.plumeria.smartgardenapi.dto.SensorDTO;
@@ -18,8 +20,12 @@ public class SensorController {
     private PlantService plantService;
 
     @GetMapping("/{mac}")
-    public SensorDAO getNewestDeviceData(@PathVariable String mac) {
-        return plantService.getLatestSensorData(mac);
+    public ResponseEntity<SensorDAO> getNewestDeviceData(@PathVariable String mac) {
+        SensorDAO sensor = plantService.getLatestSensorData(mac);
+        if(sensor != null){
+            return new ResponseEntity<SensorDAO>(sensor, HttpStatus.OK);
+        }
+        return new ResponseEntity<SensorDAO>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{mac}/all")
